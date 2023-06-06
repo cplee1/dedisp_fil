@@ -150,7 +150,7 @@ int main(int argc,char *argv[])
   if (dm_count!=0 && dm_step>0.0) {
     dm_end=dm_start+dm_count*dm_step;
   } else {
-    fprintf(stderr,"Error parsing DM range. Provide start,end,step or start,step,numdms.\n",filename);
+    fprintf(stderr,"Error parsing DM range. Provide start,end,step or start,step,numdms.\n");
     return -1;
   }
 
@@ -171,7 +171,7 @@ int main(int argc,char *argv[])
     printf("Bandwidth                                 : %f MHz\n",fabs(h.foff)*h.nchan);
     printf("Number of channels (channel width)        : %d (%f MHz)\n",h.nchan,fabs(h.foff));
     printf("Sample time                               : %f us\n",h.tsamp*1e6*ndec);
-    printf("Observation duration                      : %f s (%d samples)\n",h.tsamp*h.nsamp,h.nsamp/ndec);
+    printf("Observation duration                      : %f s (%ld samples)\n",h.tsamp*h.nsamp,h.nsamp/ndec);
     printf("Number of polarizations/bit depth         : %d/%d\n",h.nif,h.nbit);
     printf("Input data array size                     : %lu MB\n",h.buffersize/(1<<20));
     printf("Header size                               : %lu bytes\n",h.headersize);
@@ -400,8 +400,14 @@ struct header read_header(FILE *file)
       fread(&h.nbeam,sizeof(int),1,file);
     else if (strcmp(string,"ibeam")==0) 
       fread(&h.ibeam,sizeof(int),1,file);
-    else if (strcmp(string,"source_name")==0) 
+    else if (strcmp(string,"source_name")==0)
+    {
+      fread(&nchar,sizeof(int),1,file);
+      nbytes+=nchar;
+      fread(string,nchar,1,file);
+      string[nchar]='\0';
       strcpy(h.source_name,string);
+    }
   }
 
   // Get header and buffer sizes
