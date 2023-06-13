@@ -1,4 +1,4 @@
-DEDISP_HOME ?= $(HOME)/linux/src/dedisp
+DEDISP_HOME ?= /astro/mwavcs/cplee/software/dedisp/cplee-build
 include Makefile.inc
 
 dedisp_fil: dedisp_fil.c
